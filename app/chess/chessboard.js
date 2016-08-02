@@ -38,7 +38,7 @@ var Chessboard = (function () {
         if (this.clicked) {
             this.clicked = false;
             this.piece = this._fields[this.fromRow][this.fromCol];
-            if (!(this.isWhiteAllowed ^ this.piece.isWhite)) {
+            if (!(this.isWhiteAllowed !== this.piece.isWhite)) {
                 if (this.piece.checkRules(this.fromRow, this.fromCol, toRow, toCol, this._fields)) {
                     if (this._fields[toRow][toCol] != null && this._fields[toRow][toCol].isKing) {
                         if (this._fields[this.fromRow][this.fromCol].isWhite)
