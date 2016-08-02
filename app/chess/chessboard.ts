@@ -32,6 +32,7 @@ export class Chessboard {
     private fromRow:number;
     private fromCol:number;
     private clicked:boolean = false;
+    private isWhiteAllowed = true;
 
     public onClick(row:number, col:number):boolean {
         if (this._fields[row][col] == null) {
@@ -44,24 +45,33 @@ export class Chessboard {
         return true;
     }
 
-    public move(toRow:number, toCol:number):boolean {
+    whoseTurn:string = "White";
+
+    public move(toRow:number, toCol:number):string {
         //alert(this.clicked + " Old Move " + this.fromRow + " " + this.fromCol + " new Points " + toRow + " " + toCol);
         if (this.clicked) {
             this.clicked = false;
+
             this.piece = this._fields[this.fromRow][this.fromCol];
-            if (this.piece.checkRules(this.fromRow, this.fromCol, toRow, toCol, this._fields)) {
-                if (this._fields[toRow][toCol] != null && this._fields[toRow][toCol].isKing) {
-                    if (this._fields[toRow][toCol].isWhite)
-                        alert("White Wins!!!!!");
-                    else
-                        alert("Black Wins!!!!!");
+
+            if (!(this.isWhiteAllowed ^ this.piece.isWhite)) { // Alternative move between black and white
+
+                if (this.piece.checkRules(this.fromRow, this.fromCol, toRow, toCol, this._fields)) {
+                    if (this._fields[toRow][toCol] != null && this._fields[toRow][toCol].isKing) {
+                        if (this._fields[this.fromRow][this.fromCol].isWhite)
+                            alert("White Wins!!!!!");
+                        else
+                            alert("Black Wins!!!!!");
+                    }
+                    this._fields[toRow][toCol] = this._fields[this.fromRow][this.fromCol];
+                    this._fields[this.fromRow][this.fromCol] = null;
+                    this.whoseTurn = this.piece.isWhite ? "Black" : "White";
+                    this.isWhiteAllowed = this.isWhiteAllowed ? false : true;
                 }
-                this._fields[toRow][toCol] = this._fields[this.fromRow][this.fromCol];
-                this._fields[this.fromRow][this.fromCol] = null;
 
             }
         }
-        return false;
+        return this.whoseTurn;
     }
 
 

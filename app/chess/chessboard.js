@@ -18,6 +18,8 @@ var Chessboard = (function () {
             [new Rook_1.Rook(true), new Knight_1.Knight(true), new Bishop_1.Bishop(true), new Queen_1.Queen(true), new King_1.King(true), new Bishop_1.Bishop(true), new Knight_1.Knight(true), new Rook_1.Rook(true)]
         ];
         this.clicked = false;
+        this.isWhiteAllowed = true;
+        this.whoseTurn = "White";
     }
     Chessboard.prototype.getFieldValue = function (row, col) {
         return this._fields[row][col];
@@ -36,18 +38,22 @@ var Chessboard = (function () {
         if (this.clicked) {
             this.clicked = false;
             this.piece = this._fields[this.fromRow][this.fromCol];
-            if (this.piece.checkRules(this.fromRow, this.fromCol, toRow, toCol, this._fields)) {
-                if (this._fields[toRow][toCol] != null && this._fields[toRow][toCol].isKing) {
-                    if (this._fields[toRow][toCol].isWhite)
-                        alert("White Wins!!!!!");
-                    else
-                        alert("Black Wins!!!!!");
+            if (!(this.isWhiteAllowed ^ this.piece.isWhite)) {
+                if (this.piece.checkRules(this.fromRow, this.fromCol, toRow, toCol, this._fields)) {
+                    if (this._fields[toRow][toCol] != null && this._fields[toRow][toCol].isKing) {
+                        if (this._fields[this.fromRow][this.fromCol].isWhite)
+                            alert("White Wins!!!!!");
+                        else
+                            alert("Black Wins!!!!!");
+                    }
+                    this._fields[toRow][toCol] = this._fields[this.fromRow][this.fromCol];
+                    this._fields[this.fromRow][this.fromCol] = null;
+                    this.whoseTurn = this.piece.isWhite ? "Black" : "White";
+                    this.isWhiteAllowed = this.isWhiteAllowed ? false : true;
                 }
-                this._fields[toRow][toCol] = this._fields[this.fromRow][this.fromCol];
-                this._fields[this.fromRow][this.fromCol] = null;
             }
         }
-        return false;
+        return this.whoseTurn;
     };
     return Chessboard;
 }());

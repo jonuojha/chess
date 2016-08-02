@@ -54,9 +54,11 @@ export class ChessboardComponent {
 
     }
 
+    whoseTurn:string = "White";
+
     public ondragdrop(row:number, col:number) {
         //alert(row + " drop " + col);
-        this.chessboard.move(row, col);
+        this.whoseTurn = this.chessboard.move(row, col);
 
     }
 

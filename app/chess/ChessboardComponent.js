@@ -14,6 +14,7 @@ var ChessboardComponent = (function () {
     function ChessboardComponent(chessboard) {
         this.chessboard = chessboard;
         this.todos = [0, 1, 2, 3, 4, 5, 6, 7];
+        this.whoseTurn = "White";
     }
     ChessboardComponent.prototype.imageLocation = function (row, col) {
         return "/app/img/" + this.imageFileName(row, col);
@@ -40,7 +41,7 @@ var ChessboardComponent = (function () {
     };
     ChessboardComponent.prototype.ondragdrop = function (row, col) {
         //alert(row + " drop " + col);
-        this.chessboard.move(row, col);
+        this.whoseTurn = this.chessboard.move(row, col);
     };
     ChessboardComponent.prototype.ondragover = function (row, col) {
         event.preventDefault();
