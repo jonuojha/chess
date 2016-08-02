@@ -17,16 +17,90 @@ var core_1 = require('@angular/core');
 var Piece_1 = require('./Piece');
 var Pawn = (function (_super) {
     __extends(Pawn, _super);
-    function Pawn() {
-        _super.call(this);
+    function Pawn(isWhite) {
+        _super.call(this, isWhite);
+        this.isFirstMove = true;
     }
-    Pawn.prototype.commonRule = function () {
+    Pawn.prototype.getPieceImage = function () {
+        if (this.isWhite)
+            return "w_pawn.png";
+        else
+            return "b_pawn.png";
+    };
+    Pawn.prototype.checkRules = function (fromRow, fromCol, toRow, toCol, _field) {
+        if (!this.commonBeforeRule(fromRow, fromCol, toRow, toCol, _field)) {
+            return false;
+        }
+        if (this.isWhite) {
+            if (toRow >= fromRow)
+                return false;
+            if (fromCol == toCol) {
+                if (_field[toRow][toCol] != null) {
+                    return false;
+                }
+                if (this.isFirstMove) {
+                    if ((fromRow - toRow) > 2)
+                        return false;
+                }
+                else {
+                    if ((fromRow - toRow) > 1)
+                        return false;
+                }
+                if (this.checkIfVerticalEmptyTillTargetField(fromCol, toRow + 1, fromRow - 1, _field)) {
+                    this.isFirstMove = false;
+                    return true;
+                }
+            }
+            else {
+                if (_field[toRow][toCol] != null) {
+                    if (((fromRow - 1) == toRow) && ((fromCol - 1) == toCol)) {
+                        return true;
+                    }
+                    if (((fromRow - 1) == toRow) && ((fromCol + 1) == toCol)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        else {
+            if (toRow <= fromRow) {
+                return false;
+            }
+            if (fromCol == toCol) {
+                if (_field[toRow][toCol] != null) {
+                    return false;
+                }
+                if (this.isFirstMove) {
+                    if ((toRow - fromRow) > 2)
+                        return false;
+                }
+                else {
+                    if ((toRow - fromRow) > 1)
+                        return false;
+                }
+                if (this.checkIfVerticalEmptyTillTargetField(fromCol, fromRow + 1, toRow - 1, _field)) {
+                    this.isFirstMove = false;
+                    return true;
+                }
+            }
+            else {
+                if (_field[toRow][toCol] != null) {
+                    if (((fromRow + 1) == toRow) && ((fromCol - 1) == toCol)) {
+                        return true;
+                    }
+                    if (((fromRow + 1) == toRow) && ((fromCol + 1) == toCol)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     };
     Pawn = __decorate([
         core_1.Component({
             providers: [Piece_1.Piece]
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [Boolean])
     ], Pawn);
     return Pawn;
 }(Piece_1.Piece));

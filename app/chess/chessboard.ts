@@ -1,25 +1,31 @@
 import {Component, Provider} from '@angular/core';
 import {Piece} from './rules/Piece';
+import {Pawn} from "./rules/Pawn";
+import {Rook} from "./rules/Rook";
+import {Knight} from "./rules/Knight";
+import {Bishop} from "./rules/Bishop";
+import {Queen} from "./rules/Queen";
+import {King} from "./rules/King";
 
 export class Chessboard {
-    private _fields:number[][] = [
-        [-2, -3, -4, -5, -6, -4, -3, -2],
-        [-1, -1, -1, -1, -1, -1, -1, -1],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 1, 1, 1, 1],
-        [2, 3, 4, 5, 6, 4, 3, 2]
+    private _fields:Piece[][] = [
+        [new Rook(false), new Knight(false), new Bishop(false), new Queen(false), new King(false), new Bishop(false), new Knight(false), new Rook(false)],
+        [new Pawn(false), new Pawn(false), new Pawn(false), new Pawn(false), new Pawn(false), new Pawn(false), new Pawn(false), new Pawn(false)],
+        [null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null],
+        [new Pawn(true), new Pawn(true), new Pawn(true), new Pawn(true), new Pawn(true), new Pawn(true), new Pawn(true), new Pawn(true)],
+        [new Rook(true), new Knight(true), new Bishop(true), new Queen(true), new King(true), new Bishop(true), new Knight(true), new Rook(true)]
     ];
     piece:Piece;
 
     public constructor() {
-        this.piece = new Piece();
+
     }
 
 
-    public getFieldValue(row:number, col:number):number {
+    public getFieldValue(row:number, col:number):Piece {
         return this._fields[row][col];
     }
 
@@ -28,7 +34,7 @@ export class Chessboard {
     private clicked:boolean = false;
 
     public onClick(row:number, col:number):boolean {
-        if (this._fields[row][col] == 0) {
+        if (this._fields[row][col] == null) {
             return false;
         }
 
@@ -42,13 +48,18 @@ export class Chessboard {
         //alert(this.clicked + " Old Move " + this.fromRow + " " + this.fromCol + " new Points " + toRow + " " + toCol);
         if (this.clicked) {
             this.clicked = false;
-            // piece.checkRules(this.fromRow, toRow, this.fromCol, toCol);
-            if (this.fromRow == toRow && this.fromCol == toCol) {
-                return false;
-            }
+            this.piece = this._fields[this.fromRow][this.fromCol];
+            if (this.piece.checkRules(this.fromRow, this.fromCol, toRow, toCol, this._fields)) {
+                if (this._fields[toRow][toCol] != null && this._fields[toRow][toCol].isKing) {
+                    if (this._fields[toRow][toCol].isWhite)
+                        alert("White Wins!!!!!");
+                    else
+                        alert("Black Wins!!!!!");
+                }
+                this._fields[toRow][toCol] = this._fields[this.fromRow][this.fromCol];
+                this._fields[this.fromRow][this.fromCol] = null;
 
-            this._fields[toRow][toCol] = this._fields[this.fromRow][this.fromCol];
-            this._fields[this.fromRow][this.fromCol] = 0;
+            }
         }
         return false;
     }

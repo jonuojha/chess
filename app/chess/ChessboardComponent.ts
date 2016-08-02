@@ -1,10 +1,17 @@
 import {Component, Query, QueryList, Provider} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
 import {Chessboard} from './chessboard';
 import {Piece} from './rules/Piece';
+import {Queen} from "./rules/Queen";
+import {King} from "./rules/King";
+import {Pawn} from "./rules/Pawn";
+import {Rook} from "./rules/Rook";
+import {Knight} from "./rules/Knight";
+import {Bishop} from "./rules/Bishop";
 @Component({
     selector: 'chessboard',
     templateUrl: '/app/chess/ChessboardComponent.html',
-    providers: [Chessboard, Piece]
+    providers: [Chessboard]
 })
 
 export class ChessboardComponent {
@@ -19,35 +26,21 @@ export class ChessboardComponent {
     }
 
     public backgroundCSS(row:number, col:number):string {
-        if((row+col)%2 == 0)
+        if ((row + col) % 2 == 0)
             return "bg-gray";
         else
             return "bg-white";
     }
 
-    private imageFileName(row:number, col:number):string {
-        var intVal = this.chessboard.getFieldValue(row, col);
-        var val = intVal;
-        if (val < 0) {
-            val = val * -1;
-        }
-        switch (val) {
-            case 5 :
-                return intVal == 5 ? "w_queen.png" : "b_queen.png";
-            case 6 :
-                return intVal == 6 ? "w_king.png" : "b_king.png";
-            case 1 :
-                return intVal == 1 ? "w_pawn.png" : "b_pawn.png";
-            case 2 :
-                return intVal == 2 ? "w_rook.png" : "b_rook.png";
-            case 3 :
-                return intVal == 3 ? "w_knight.png" : "b_knight.png";
-            case 4 :
-                return intVal == 4 ? "w_bishop.png" : "b_bishop.png";
-            default :
-                return "empty.png";
+    private piece:Piece;
 
-        }
+    private imageFileName(row:number, col:number):string {
+        this.piece = this.chessboard.getFieldValue(row, col);
+
+        if (this.piece == null)
+            return "empty.png";
+
+        return this.piece.getPieceImage();
     }
 
     public onclick(row:number, col:number) {
