@@ -17,7 +17,7 @@ var ChessboardComponent = (function () {
         this.whoseTurn = "White";
     }
     ChessboardComponent.prototype.imageLocation = function (row, col) {
-        return "/app/img/" + this.imageFileName(row, col);
+        return "app/img/" + this.imageFileName(row, col);
     };
     ChessboardComponent.prototype.backgroundCSS = function (row, col) {
         if ((row + col) % 2 == 0)
@@ -49,7 +49,7 @@ var ChessboardComponent = (function () {
     ChessboardComponent = __decorate([
         core_1.Component({
             selector: 'chessboard',
-            templateUrl: '/app/chess/ChessboardComponent.html',
+            templateUrl: 'app/chess/ChessboardComponent.html',
             providers: [chessboard_1.Chessboard]
         }), 
         __metadata('design:paramtypes', [chessboard_1.Chessboard])

@@ -10,7 +10,7 @@ import {Knight} from "./rules/Knight";
 import {Bishop} from "./rules/Bishop";
 @Component({
     selector: 'chessboard',
-    templateUrl: '/app/chess/ChessboardComponent.html',
+    templateUrl: 'app/chess/ChessboardComponent.html',
     providers: [Chessboard]
 })
 
@@ -22,7 +22,7 @@ export class ChessboardComponent {
     public todos:Number[] = [0, 1, 2, 3, 4, 5, 6, 7];
 
     public imageLocation(row:number, col:number):string {
-        return "/app/img/" + this.imageFileName(row, col);
+        return "app/img/" + this.imageFileName(row, col);
     }
 
     public backgroundCSS(row:number, col:number):string {

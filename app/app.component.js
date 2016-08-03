@@ -17,7 +17,7 @@ var AppComponent = (function () {
     AppComponent = __decorate([
         core_1.Component({
             selector: 'my-app',
-            templateUrl: '/app/ApplicationComponent.html',
+            templateUrl: 'app/ApplicationComponent.html',
             directives: [common_1.CORE_DIRECTIVES, ChessboardComponent_1.ChessboardComponent]
         }), 
         __metadata('design:paramtypes', [])

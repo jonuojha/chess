@@ -54,7 +54,7 @@ export class Chessboard {
 
             this.piece = this._fields[this.fromRow][this.fromCol];
 
-            if (!(this.isWhiteAllowed ^ this.piece.isWhite)) { // Alternative move between black and white
+            if (!(this.isWhiteAllowed !== this.piece.isWhite)) { // Alternative move between black and white
 
                 if (this.piece.checkRules(this.fromRow, this.fromCol, toRow, toCol, this._fields)) {
                     if (this._fields[toRow][toCol] != null && this._fields[toRow][toCol].isKing) {
