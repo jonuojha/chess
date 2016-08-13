@@ -24,16 +24,26 @@ var Chessboard = (function () {
     Chessboard.prototype.getFieldValue = function (row, col) {
         return this._fields[row][col];
     };
-    Chessboard.prototype.onClick = function (row, col) {
+    Chessboard.prototype.setIsWhite = function () {
+    };
+    Chessboard.prototype.onClick = function (row, col, isWhite) {
         if (this._fields[row][col] == null) {
             return false;
         }
         this.clicked = true;
         this.fromRow = row;
         this.fromCol = col;
+        if (isWhite) {
+            this.isWhiteAllowed = true;
+            this.whoseTurn = "White";
+        }
+        else {
+            this.isWhiteAllowed = false;
+            this.whoseTurn = "Black";
+        }
         return true;
     };
-    Chessboard.prototype.move = function (toRow, toCol) {
+    Chessboard.prototype.move = function (toRow, toCol, socket, isOpponentMove) {
         //alert(this.clicked + " Old Move " + this.fromRow + " " + this.fromCol + " new Points " + toRow + " " + toCol);
         if (this.clicked) {
             this.clicked = false;
@@ -41,19 +51,25 @@ var Chessboard = (function () {
             if (!(this.isWhiteAllowed !== this.piece.isWhite)) {
                 if (this.piece.checkRules(this.fromRow, this.fromCol, toRow, toCol, this._fields)) {
                     if (this._fields[toRow][toCol] != null && this._fields[toRow][toCol].isKing) {
-                        if (this._fields[this.fromRow][this.fromCol].isWhite)
-                            alert("White Wins!!!!!");
-                        else
-                            alert("Black Wins!!!!!");
                     }
                     this._fields[toRow][toCol] = this._fields[this.fromRow][this.fromCol];
                     this._fields[this.fromRow][this.fromCol] = null;
                     this.whoseTurn = this.piece.isWhite ? "Black" : "White";
-                    this.isWhiteAllowed = this.isWhiteAllowed ? false : true;
+                    //this.isWhiteAllowed = this.isWhiteAllowed ? false : true;
+                    if (!isOpponentMove) {
+                        socket.emit("my move", {
+                            "fromRow": this.fromRow,
+                            "fromCol": this.fromCol,
+                            "toRow": toRow,
+                            "toCol": toCol
+                        });
+                        return false;
+                    }
+                    return true;
                 }
             }
         }
-        return this.whoseTurn;
+        return true;
     };
     return Chessboard;
 }());

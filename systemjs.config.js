@@ -8,6 +8,8 @@
     'app':                        'app', // 'dist',
     '@angular':                   'node_modules/@angular',
     'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api',
+    'socket.io-client' :          'node_modules/socket.io-client',
+    'socket.io':                  'node_modules/socket.io',
     'rxjs':                       'node_modules/rxjs'
   };
   // packages tells the System loader how to load when no filename and/or no extension
@@ -15,6 +17,7 @@
     'app':                        { main: 'main.js',  defaultExtension: 'js' },
     'rxjs':                       { defaultExtension: 'js' },
     'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
+    'socket.io-client' :          {main: 'socket.io.js'},
   };
   var ngPackageNames = [
     'common',

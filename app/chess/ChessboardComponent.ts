@@ -8,6 +8,7 @@ import {Pawn} from "./rules/Pawn";
 import {Rook} from "./rules/Rook";
 import {Knight} from "./rules/Knight";
 import {Bishop} from "./rules/Bishop";
+import * as io from 'socket.io-client';
 @Component({
     selector: 'chessboard',
     templateUrl: 'app/chess/ChessboardComponent.html',
@@ -15,8 +16,26 @@ import {Bishop} from "./rules/Bishop";
 })
 
 export class ChessboardComponent {
-    constructor(private chessboard:Chessboard) {
+    socket = null;
 
+    opponentName:String = "";
+    canIPlay:boolean = false;
+    moveOpponent:String = "";
+    isWhite:boolean;
+
+    constructor(private chessboard:Chessboard) {
+        this.socket = io();
+        this.socket.emit("new player added", {"name": "prabhat", "age": 27});
+        this.socket.on('opponent move', function (data) {
+            this.moveOpponentMove(data["fromRow"], data["fromCol"], data["toRow"], data["toCol"]);
+            this.moveOpponent = " " + data["fromRow"] + " " + data["fromCol"] + " " + data["toRow"] + " " + data["toCol"];
+        }.bind(this));
+
+        this.socket.on('game created', function (data) {
+            this.isWhite = data["isWhite"];
+            this.opponentName = data["opponentName"];
+            this.canIPlay = this.isWhite;    // If its white, then you can play
+        }.bind(this));
     }
 
     public todos:Number[] = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -49,16 +68,21 @@ export class ChessboardComponent {
     }
 
     public ondragstart(row:number, col:number) {
-        //alert(row + " " + col);
-        this.chessboard.onClick(row, col);
-
+        this.chessboard.onClick(row, col, this.isWhite);
     }
 
     whoseTurn:string = "White";
 
-    public ondragdrop(row:number, col:number) {
-        //alert(row + " drop " + col);
-        this.whoseTurn = this.chessboard.move(row, col);
+    public moveOpponentMove(fromRow:number, fromCol:number, toRow:number, toCol:number) {
+
+        this.chessboard.onClick(fromRow, fromCol, !this.isWhite);
+        this.canIPlay = this.chessboard.move(toRow, toCol, this.socket, true);
+    }
+
+    public ondragdrop(row:number, col:number, isOpponentMove:boolean) {
+        if (this.canIPlay) {
+            this.canIPlay = this.chessboard.move(row, col, this.socket, isOpponentMove);
+        }
 
     }
 

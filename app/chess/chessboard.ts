@@ -32,9 +32,14 @@ export class Chessboard {
     private fromRow:number;
     private fromCol:number;
     private clicked:boolean = false;
-    private isWhiteAllowed = true;
 
-    public onClick(row:number, col:number):boolean {
+    private isWhiteAllowed = true;
+    whoseTurn:string = "White";
+
+    public setIsWhite() {
+    }
+
+    public onClick(row:number, col:number, isWhite:boolean):boolean {
         if (this._fields[row][col] == null) {
             return false;
         }
@@ -42,12 +47,21 @@ export class Chessboard {
         this.clicked = true;
         this.fromRow = row;
         this.fromCol = col;
+
+        if (isWhite) {
+            this.isWhiteAllowed = true;
+            this.whoseTurn = "White";
+        }
+        else {
+            this.isWhiteAllowed = false;
+            this.whoseTurn = "Black";
+        }
+
         return true;
     }
 
-    whoseTurn:string = "White";
 
-    public move(toRow:number, toCol:number):string {
+    public move(toRow:number, toCol:number, socket, isOpponentMove:boolean):boolean {
         //alert(this.clicked + " Old Move " + this.fromRow + " " + this.fromCol + " new Points " + toRow + " " + toCol);
         if (this.clicked) {
             this.clicked = false;
@@ -58,20 +72,30 @@ export class Chessboard {
 
                 if (this.piece.checkRules(this.fromRow, this.fromCol, toRow, toCol, this._fields)) {
                     if (this._fields[toRow][toCol] != null && this._fields[toRow][toCol].isKing) {
-                        if (this._fields[this.fromRow][this.fromCol].isWhite)
-                            alert("White Wins!!!!!");
-                        else
-                            alert("Black Wins!!!!!");
+                        /*if (this._fields[this.fromRow][this.fromCol].isWhite)
+                         alert("White Wins!!!!!");
+                         else
+                         alert("Black Wins!!!!!");*/
                     }
                     this._fields[toRow][toCol] = this._fields[this.fromRow][this.fromCol];
                     this._fields[this.fromRow][this.fromCol] = null;
                     this.whoseTurn = this.piece.isWhite ? "Black" : "White";
-                    this.isWhiteAllowed = this.isWhiteAllowed ? false : true;
+                    //this.isWhiteAllowed = this.isWhiteAllowed ? false : true;
+                    if (!isOpponentMove) {
+                        socket.emit("my move", {
+                            "fromRow": this.fromRow,
+                            "fromCol": this.fromCol,
+                            "toRow": toRow,
+                            "toCol": toCol
+                        });
+                        return false;
+                    }
+                    return true;
                 }
 
             }
         }
-        return this.whoseTurn;
+        return true;
     }
 
 
