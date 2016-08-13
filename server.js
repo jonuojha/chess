@@ -40,6 +40,8 @@ io.on('connection', function (socket) {
 });
 
 
-http.listen(server_port, server_ip_address, function () {
-    console.log('listening on *:3002');
-});
+var port = process.env.PORT || 1337;
+http.createServer(function(req, res) {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Hello World\n');
+}).listen(port);
